@@ -1,0 +1,27 @@
+<p>
+  <b>Name:</b>
+  <%= @bookmark.name %>
+</p>
+
+<p>
+  <b>Page:</b>
+  <%= @bookmark.page %>
+</p>
+
+<p>
+  <b>Sura:</b>
+  <%= @bookmark.sura %>
+</p>
+
+<p>
+  <b>Aya:</b>
+  <%= @bookmark.aya %>
+</p>
+
+<p>
+  <b>Default?:</b>
+  <%= @bookmark.is_default %>
+</p>
+
+<%= link_to 'Edit', edit_bookmark_path(@bookmark) %> |
+<%= link_to 'Back', bookmarks_path %>

@@ -3,6 +3,8 @@ Qursync::Application.routes.draw do
 
   resources :bookmarks
 
+  mount Devise::Oauth2Providable::Engine => '/oauth2'
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

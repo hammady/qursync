@@ -38,8 +38,8 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 gem 'devise'
-gem "oauth-plugin", "~> 0.4.0"
 gem 'cancan'
+gem 'devise_oauth2_providable'
 
 # testing
 group :development, :test do

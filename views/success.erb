@@ -1,5 +1,7 @@
-<h1>Authorization Success</h1>
+<h1>Authorization Result</h1>
 
 <%=@message.inspect%>
 
-<a href="/bookmarks">List Bookmarks</a>
+<% if @success %>
+  <a href="/bookmarks">List Bookmarks</a>
+<% end %>

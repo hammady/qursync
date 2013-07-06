@@ -1,5 +1,6 @@
 class BookmarksController < ApplicationController
-  before_filter :authenticate_user!
+  #before_filter :authenticate_user!
+  doorkeeper_for :all
   load_and_authorize_resource
 
   # GET /bookmarks

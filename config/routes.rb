@@ -1,10 +1,12 @@
 Qursync::Application.routes.draw do
+  use_doorkeeper
+
   devise_for :users
 
   resources :bookmarks
 
-  mount Devise::Oauth2Providable::Engine => '/oauth2'
-  
+  #mount Devise::Oauth2Providable::Engine => '/oauth2'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

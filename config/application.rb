@@ -60,7 +60,7 @@ module Qursync
     config.assets.version = '1.0'
 
     # following oauth2 parameters are left to defaults
-    config.devise_oauth2_providable.access_token_expires_in         = 1.year # 15.minute default
+    #config.devise_oauth2_providable.access_token_expires_in         = 1.year # 15.minute default
     # config.devise_oauth2_providable.refresh_token_expires_in        = 1.month
     # config.devise_oauth2_providable.authorization_token_expires_in  = 1.minute
 

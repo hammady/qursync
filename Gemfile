@@ -39,7 +39,8 @@ gem 'jquery-rails'
 
 gem 'devise'
 gem 'cancan'
-gem 'devise_oauth2_providable'
+#gem 'devise_oauth2_providable'
+gem 'doorkeeper', '~> 0.6.7'
 
 # testing
 group :development, :test do

@@ -1,11 +1,16 @@
 Qursync::Application.routes.draw do
-  use_doorkeeper
+  use_doorkeeper do
+    # custom controller
+    controllers :applications => 'oauth/applications'
+  end
 
   devise_for :users
 
-  resources :bookmarks
-
-  #mount Devise::Oauth2Providable::Engine => '/oauth2'
+  namespace :api do
+    namespace :v1 do
+      resources :bookmarks
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -56,7 +61,7 @@ Qursync::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'bookmarks#index'
+  root :to => 'oauth/applications#index'
 
   # See how all your routes lay out with "rake routes"
 

@@ -66,7 +66,7 @@ Qursync::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # TODO SET
-  config.action_mailer.default_url_options = { :host => 'qursync.almoshaf.net' }
+  config.action_mailer.default_url_options = { :host => 'qursync.herokuapp.com' }
 
   # heroku
   config.assets.initialize_on_precompile = false

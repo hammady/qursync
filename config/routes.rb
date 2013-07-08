@@ -4,7 +4,7 @@ Qursync::Application.routes.draw do
     controllers :applications => 'oauth/applications'
   end
 
-  devise_for :users
+  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
   namespace :api do
     namespace :v1 do

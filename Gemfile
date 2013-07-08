@@ -42,6 +42,11 @@ gem 'cancan'
 #gem 'devise_oauth2_providable'
 gem 'doorkeeper', '~> 0.6.7'
 
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-twitter'
+gem 'omniauth-facebook'
+
 # testing
 group :development, :test do
   gem "rspec-rails", '~> 2.0'

@@ -83,7 +83,7 @@ get '/demo/:endpoint' do
   if endpoints.include?(endpoint)
     url = "#{request_url}/api/v1/#{endpoint}?access_token=#{session[:access_token]}"
     response = Typhoeus.get(url)
-    code, @content = parse_response(response, "Listing", false)
+    code, @content = parse_response(response)
     @endpoint = endpoint
     @inputs = endpoint_params[endpoint.to_sym]
     @readonly_inputs = endpoint_params_readonly[endpoint.to_sym] || []
@@ -121,24 +121,21 @@ post '/demo/modify' do
   ]
   request = Typhoeus::Request.new(url, method: method, params: phash)
   request.run
-  parse_response(request.response, operation, true)
+  parse_response(request.response, operation)
 
   redirect "/demo/#{endpoint}"
 end
 
-def parse_response(response, operation_name, body_in_flash)
-  body = JSON.parse(response.body) rescue ""
+def parse_response(response, flash_operation = nil)
   code = response.code
-  type = code.between?(200, 299) ? :notice : :error
+  body = JSON.parse(response.body) rescue "NO JSON BODY"
 
   if code == 401
     redirect '/auth'
-  else
-    message = "#{operation_name} #{code}"
-    message = "#{message} #{body == '' ? '[NO BODY]' : body}" if body_in_flash
-    flash[type] = message
-    return code, body
+  elsif flash_operation
+    flash[code.between?(200, 299) ? :notice : :error] = "#{flash_operation} (#{code}) - #{body == '' ? '[NO BODY]' : body}"
   end
+  return code, body
 end
 
 def redirect_uri

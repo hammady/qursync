@@ -3,6 +3,7 @@ class Note < ActiveRecord::Base
   belongs_to :pointer, polymorphic: true, :dependent => :destroy
   attr_accessible :text
 
+  validates :text, presence: true
   validates :pointer, presence: true
   validates_associated :pointer
 

@@ -33,7 +33,7 @@ class Api::V1::TagNamesController < Api::V1::ApiController
   private
 
   def save(tag_name)
-    tag_name.name = params[:name] unless params[:name].blank?
+    tag_name.name = params[:name]
     super
   end
 

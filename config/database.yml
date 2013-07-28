@@ -22,6 +22,6 @@ production:
   encoding: utf8
   database: quranprofiles
   username: quranprofiles
-  password: Qur@nPr0f1l3$_$3cr3t
+  password: Qur@nPr0f1l3$_$3cr3t # this is the mysql root password!
   host: 127.0.0.1
   port: 3306

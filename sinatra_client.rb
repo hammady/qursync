@@ -87,11 +87,11 @@ get '/demo/:endpoint' do
     @endpoint = endpoint
     @inputs = endpoint_params[endpoint.to_sym]
     @readonly_inputs = endpoint_params_readonly[endpoint.to_sym] || []
-    @request_url = request_url
+    @request_url = "#{request_url}/api/v1"
     @hint = endpoint_params_hints[endpoint.to_sym]
     erb :content
   else
-    flash[:error] = "There is no endpoint called '#{e}'"
+    flash[:error] = "There is no endpoint called '#{endpoint}'"
     redirect '/'
   end
 end

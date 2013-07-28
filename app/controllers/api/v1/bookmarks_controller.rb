@@ -13,26 +13,12 @@ class Api::V1::BookmarksController < Api::V1::ApiController
 
   # POST /bookmarks
   def create
-    @bookmark.user = current_user
-    Bookmark.reset_default(current_user, @bookmark) if params[:bookmark][:is_default] == "1"
-
-    if @bookmark.save
-      render json: @bookmark, status: :created, location: @bookmark
-    else
-      render json: @bookmark.errors, status: :unprocessable_entity
-    end
+    save @bookmark
   end
 
   # PUT /bookmarks/1
   def update
-    @bookmark.user = current_user
-    Bookmark.reset_default(current_user, @bookmark) if params[:bookmark][:is_default] == "1"
-
-    if @bookmark.update_attributes(params[:bookmark])
-      head :no_content
-    else
-      render json: @bookmark.errors, status: :unprocessable_entity
-    end
+    save @bookmark
   end
 
   # DELETE /bookmarks/1
@@ -43,4 +29,13 @@ class Api::V1::BookmarksController < Api::V1::ApiController
       render json: @bookmark.errors, status: :unprocessable_entity
     end
   end
+
+  private
+
+  def save(bookmark)
+    bookmark.name = params[:name] unless params[:name].blank?
+    bookmark.is_default = params[:is_default] == "1" unless params[:is_default].blank?
+    super
+  end
+
 end

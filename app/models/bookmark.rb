@@ -1,34 +1,26 @@
 class Bookmark < ActiveRecord::Base
-  attr_accessible :name, :page, :sura, :aya, :is_default
-  belongs_to :user
+  attr_accessible :name, :is_default
 
-  validates :name, presence: true
+  belongs_to :user, inverse_of: :bookmarks
+  belongs_to :pointer, polymorphic: true, :dependent => :destroy
+  
+  validates :pointer, presence: true
+  validates_associated :pointer
 
-  validates :page, allow_blank: true, numericality: { 
-    only_integer: true,
-    greater_than_or_equal_to: 1,
-    less_than_or_equal_to: 604
-  }
-
-  validates :sura, allow_blank: true, numericality: { 
-    only_integer: true,
-    greater_than_or_equal_to: 1,
-    less_than_or_equal_to: 114
-  }
-
-  validates :aya, allow_blank: true, numericality: { 
-    only_integer: true,
-    greater_than_or_equal_to: 1,
-    less_than_or_equal_to: 288
-    # TODO depend on sura, lookup limits from db
-  }
-
-  def self.reset_default(user, new_default)
-    obsolete_default = user.bookmarks.find_by_is_default true
-    logger.debug("Obsolete default bookmakr for user #{user.id} is #{obsolete_default.inspect}")
-    if obsolete_default && obsolete_default != new_default
-      obsolete_default.is_default = false
-      obsolete_default.save
+  after_save do |bookmark|
+    if bookmark.is_default
+      user = bookmark.user
+      obsolete_default = user.bookmarks.find_by_is_default true
+      logger.debug("Found default bookmark for user #{user.id} is #{obsolete_default.inspect}")
+      if obsolete_default && obsolete_default != bookmark
+        obsolete_default.is_default = false
+        obsolete_default.save
+      end
     end
   end
+
+  def as_json(options = {})
+    super(:only => [:id, :name, :is_default, :created_at, :updated_at], :methods => :pointer)
+  end
+
 end

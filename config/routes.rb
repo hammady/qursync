@@ -9,6 +9,9 @@ Qursync::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :bookmarks
+      resources :tag_names
+      resources :tags
+      resources :notes
     end
   end
 

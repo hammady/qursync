@@ -1,24 +1,62 @@
 require 'sinatra'
 require 'json'
 require 'typhoeus'
+require 'sinatra/flash'
 enable :sessions
 
 # manually create client application details on the provider side (table: oauth2_clients)
 
 def consumer_key
-  '2711218e75b9bad861c3fe0a149b8f9a964f8e427d36c8c70250d630c7d045f8'
+  '51ae32d245f7b8fe2b3bee7ed54b05bb9968cd8c879ceced8421841dc9fb7d76'
 end
 
 def consumer_secret
-  'd645f616a397f90606ab6dc0f4e3104c023eb25945059c6ba06c56e75dfe077c' 
+  '5d2e8ccf0bd14aa13371752da84cd36f50e5be837b8dc5730248daf6059ba1b1' 
 end
 
 def request_url
   'http://localhost:3000'
 end
 
+def endpoints
+  %w(bookmarks tag_names tags notes)
+end
+
+def endpoint_params
+  {
+    :bookmarks => %w(name page chapter verse is_default),
+    :tag_names => %w(name),
+    :tags => %w(tag_name_id page chapter verse),
+    :notes => %w(text page chapter verse)
+  }
+end
+
+def endpoint_params_readonly
+  {
+    :tags => %w(tag_name_id)
+  }
+end
+
+def endpoint_params_hints
+  {
+    :bookmarks => "either type a page number or a combination of chapter/verse, set is_default to 1 to mark it as the default bookmark (e.g. last page)",
+    :tag_names => "name is mandatory",
+    :tags => "get tag_name_id from tag_names endpoint, either type a page number or a combination of chapter/verse",
+    :notes => "write a long text here, either type a page number or a combination of chapter/verse"
+  }
+end
+
+get '/' do
+  if session[:access_token]
+    @endpoints = endpoints
+    erb :home
+  else
+    redirect '/auth'
+  end
+end
+
 get "/auth" do
-  redirect "#{request_url}/oauth/authorize?client_id=#{consumer_key}&redirect_uri=http%3A%2F%2Flocalhost%3A4567%2Fcallback&response_type=code"
+  redirect "#{request_url}/oauth/authorize?client_id=#{consumer_key}&redirect_uri=#{redirect_uri}&response_type=code"
 end
 
 get '/callback' do
@@ -36,18 +74,71 @@ get '/callback' do
   else
     @message = "Error authenticating with the server"
   end
-  @success = !!code
-  erb :success
+  @endpoints = !!code ? endpoints : [] 
+  erb :home
 end
 
-get '/bookmarks' do
-  @bookmarks = get_response('bookmarks')
-  erb :bookmarks
+get '/demo/:endpoint' do
+  endpoint = params[:endpoint]
+  if endpoints.include?(endpoint)
+    url = "#{request_url}/api/v1/#{endpoint}?access_token=#{session[:access_token]}"
+    response = Typhoeus.get(url)
+    code, @content = parse_response(response, "Listing", false)
+    @endpoint = endpoint
+    @inputs = endpoint_params[endpoint.to_sym]
+    @readonly_inputs = endpoint_params_readonly[endpoint.to_sym] || []
+    @request_url = request_url
+    @hint = endpoint_params_hints[endpoint.to_sym]
+    erb :content
+  else
+    flash[:error] = "There is no endpoint called '#{e}'"
+    redirect '/'
+  end
 end
 
-def get_response(url)
-  access_token = session[:access_token]
-  JSON.parse(Typhoeus.get("#{request_url}/api/v1/#{url}?access_token=#{session[:access_token]}").body)
+post '/demo/modify' do
+  action = params[:action]
+  id = params[:id]
+  endpoint = params[:endpoint].to_sym
+  method, url, operation = :get, endpoint, ""
+  case action
+  when 'update'
+    url = "#{endpoint}/#{id}"
+    method = :put
+    operation = "Updating"
+  when 'create'
+    url = endpoint
+    method = :post
+    operation = "Creating"
+  when 'delete'
+    url = "#{endpoint}/#{id}"
+    method = :delete
+    operation = "Deleting"
+  end
+  url = "#{request_url}/api/v1/#{url}?access_token=#{session[:access_token]}" 
+  phash = Hash[
+    endpoint_params[endpoint].zip endpoint_params[endpoint].map{|p| params[p]}
+  ]
+  request = Typhoeus::Request.new(url, method: method, params: phash)
+  request.run
+  parse_response(request.response, operation, true)
+
+  redirect "/demo/#{endpoint}"
+end
+
+def parse_response(response, operation_name, body_in_flash)
+  body = JSON.parse(response.body) rescue ""
+  code = response.code
+  type = code.between?(200, 299) ? :notice : :error
+
+  if code == 401
+    redirect '/auth'
+  else
+    message = "#{operation_name} #{code}"
+    message = "#{message} #{body == '' ? '[NO BODY]' : body}" if body_in_flash
+    flash[type] = message
+    return code, body
+  end
 end
 
 def redirect_uri

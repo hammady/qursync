@@ -11,17 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130708161106) do
+ActiveRecord::Schema.define(:version => 20130728034344) do
 
   create_table "bookmarks", :force => true do |t|
     t.string   "name"
-    t.integer  "page"
-    t.integer  "sura"
-    t.integer  "aya"
     t.integer  "user_id"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.boolean  "is_default", :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.boolean  "is_default",   :default => false
+    t.integer  "pointer_id"
+    t.string   "pointer_type"
   end
 
   create_table "client_applications", :force => true do |t|
@@ -37,6 +36,18 @@ ActiveRecord::Schema.define(:version => 20130708161106) do
   end
 
   add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
+
+  create_table "notes", :force => true do |t|
+    t.text     "text"
+    t.integer  "user_id"
+    t.integer  "pointer_id"
+    t.string   "pointer_type"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "notes", ["pointer_id"], :name => "index_notes_on_pointer_id"
+  add_index "notes", ["user_id"], :name => "index_notes_on_user_id"
 
   create_table "oauth_access_grants", :force => true do |t|
     t.integer  "resource_owner_id", :null => false
@@ -109,6 +120,30 @@ ActiveRecord::Schema.define(:version => 20130708161106) do
 
   add_index "oauth_tokens", ["token"], :name => "index_oauth_tokens_on_token", :unique => true
 
+  create_table "page_pointers", :force => true do |t|
+    t.integer  "page"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "tag_names", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "tags", :force => true do |t|
+    t.integer  "tag_name_id"
+    t.integer  "pointer_id"
+    t.string   "pointer_type"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "tags", ["pointer_id"], :name => "index_tags_on_pointer_id"
+  add_index "tags", ["tag_name_id"], :name => "index_tags_on_tag_name_id"
+
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
     t.string   "encrypted_password",     :default => "", :null => false
@@ -133,5 +168,12 @@ ActiveRecord::Schema.define(:version => 20130708161106) do
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+
+  create_table "verse_pointers", :force => true do |t|
+    t.integer  "chapter"
+    t.integer  "verse"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
 end

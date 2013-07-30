@@ -1,44 +1,12 @@
 class Api::V1::TagsController < Api::V1::ApiController
-  respond_to :json
 
   prepend_before_filter :create_tag, :only => :create
 
-  # GET /tags
-  def index
-    render json: @tags
-  end
-
-  # GET /tags/1
-  def show
-    render json: @tag
-  end
-
-  # POST /tags
-  def create
-    save @tag
-  end
-
-  # PUT /tags/1
-  def update
-    save @tag
-  end
-
-  # DELETE /tags/1
-  def destroy
-    if @tag.destroy
-      head :no_content
-    else
-      render json: @tag.errors, status: :unprocessable_entity
-    end
-  end
-
   private
 
-  def save(tag)
+  def set_attributes(tag)
     if @tag.tag_name.user.id != current_user.id
       render status: :forbidden
-    else
-      super
     end
   end
 

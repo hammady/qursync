@@ -1,11 +1,12 @@
+# DELETE THIS FILE, UNUSED!!
 module Doorkeeper
   class ApplicationsController < Doorkeeper::ApplicationController
     respond_to :html
 
-    before_filter :authenticate_admin!
+    before_filter :authenticate_user!
 
     def index
-      @applications = Application.all
+      @applications = current_user.applications
     end
 
     def new
@@ -14,6 +15,7 @@ module Doorkeeper
 
     def create
       @application = Application.new(params[:application])
+      @application.owner = current_user
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash, :applications, :create])
         respond_with [:oauth, @application]

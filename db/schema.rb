@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130728034344) do
+ActiveRecord::Schema.define(:version => 20130730005131) do
 
   create_table "bookmarks", :force => true do |t|
     t.string   "name"
@@ -22,20 +22,6 @@ ActiveRecord::Schema.define(:version => 20130728034344) do
     t.integer  "pointer_id"
     t.string   "pointer_type"
   end
-
-  create_table "client_applications", :force => true do |t|
-    t.string   "name"
-    t.string   "url"
-    t.string   "support_url"
-    t.string   "callback_url"
-    t.string   "key",          :limit => 40
-    t.string   "secret",       :limit => 40
-    t.integer  "user_id"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
-  end
-
-  add_index "client_applications", ["key"], :name => "index_client_applications_on_key", :unique => true
 
   create_table "notes", :force => true do |t|
     t.text     "text"
@@ -88,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20130728034344) do
     t.string   "owner_type",   :default => "User", :null => false
     t.string   "website"
     t.text     "description"
+    t.boolean  "listed",       :default => false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
@@ -163,6 +150,7 @@ ActiveRecord::Schema.define(:version => 20130728034344) do
     t.string   "provider"
     t.string   "uid"
     t.string   "name"
+    t.date     "developer_since"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

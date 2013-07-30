@@ -1,0 +1,42 @@
+<h1>Profile summary for <%= @user.name %></h1>
+
+<h2>Profile data</h2>
+
+<ul>
+<% @counts.each do |endpoint, count| %>
+  <li><b><%= endpoint.camelize %>:</b> <%= count %></li>
+<% end %>
+</ul>
+
+<h2>Apps accessing your profile</h2>
+<% if @user.granted_oauth_applications.length == 0 %>
+  <p>None</p>
+<% else %>
+  <ul>
+  <% @user.granted_oauth_applications.each do |app| %>
+    <li><%= link_to app.name, app.website %>: <%= app.description %> <%= link_to '[Revoke]', revoke_app_path(app.id), confirm: 'Are you sure you want to revoke access to this app? It won\'t be able to access your data until you grant it again' %></li>
+  <% end %>
+  </ul>
+<% end %>
+
+<% if @app_gallery.length > 0 %>
+  <h2>App gallery</h2>
+  <ul>
+  <% @app_gallery.each do |app| %>
+    <li><%= link_to app.name, app.website %>: <%= app.description %></li>
+  <% end %>
+  </ul>
+<% end %>
+
+<% if @user.is_developer %>
+  <h2>Developer</h2>
+  <p>You have developed <%= link_to pluralize(@user.oauth_applications.count, 'app'), oauth_applications_path %></p>
+  <i>Developer for <%= time_ago_in_words(@user.developer_since) %></i>
+  <h3>Documentation</h3>
+  <ul>
+    <li>Check out <%= link_to "this presentation", @presentation_url %> for using OAuth in your mobile apps</li>
+    <li>API documentation is being cooked, meanwhile amuse your taste buds with the <%= link_to "Sinatra Demo Client", @demo_url %> for an interactive API demo</li>
+  </ul>
+<% else %>
+  Are you a developer? Do you want to create your own apps to access other users profiles? Contact us with more details about your app ideas via email: <a href="mailto:support@quran.com">support@quran.com</a>
+<% end %>

@@ -66,3 +66,6 @@ en:
       authorized_applications:
         destroy:
           notice: 'Application revoked.'
+    scopes:
+      read: 'Read your profile data (bookmarks, tags, notes, ...)'
+      write: 'Update your profile data (bookmarks, tags, notes, ...)'

@@ -8,13 +8,14 @@ Qursync::Application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :bookmarks
-      resources :tag_names
-      resources :tags
-      resources :notes
+      resources :bookmarks, defaults: {format: :json}
+      resources :tag_names, defaults: {format: :json}
+      resources :tags, defaults: {format: :json}
+      resources :notes, defaults: {format: :json}
     end
   end
 
+  match 'revoke/:app_id' => 'profile_summary#revoke', as: 'revoke_app'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -64,7 +65,8 @@ Qursync::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'oauth/applications#index'
+  #root :to => 'oauth/applications#index'
+  root to: 'profile_summary#index'
 
   # See how all your routes lay out with "rake routes"
 

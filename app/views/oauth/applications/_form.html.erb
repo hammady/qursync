@@ -39,6 +39,15 @@
       </div>
     </div>
 
+    <div class="clearfix">
+      <%= f.label :listed %>
+      <div class="input">
+        <%= f.check_box :listed %>
+        Check if you want your app to be listed to end users on their profile summary page
+        <%= errors_for application, :listed %>
+      </div>
+    </div>
+
     <div class="clearfix"></div>
 
     <div class="actions">

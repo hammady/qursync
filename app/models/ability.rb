@@ -4,7 +4,7 @@ class Ability
   def initialize(user)
     user ||= User.new # guest user (not logged in)
 
-    can :manage, Doorkeeper::RichApplication, :owner_id => user.id, :owner_type => 'User'
+    can :manage, Doorkeeper::RichApplication, :owner_id => user.id, :owner_type => 'User' if user.developer_since
     can :manage, Bookmark, :user_id => user.id
     can :manage, TagName, :user_id => user.id
     can :manage, Tag, :tag_name => {:user_id => user.id}

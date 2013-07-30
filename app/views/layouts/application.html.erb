@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Qursync</title>
+  <title>Quran.com Profiles</title>
   <%= stylesheet_link_tag    "doorkeeper/application" %>
   <%= javascript_include_tag "doorkeeper/application" %>
   <%= csrf_meta_tags %>
@@ -12,7 +12,7 @@
       <div class="fill">
         <div class="container">
           <span class="brand">
-            Qursync
+            <%= link_to "Quran.com Profiles", "/" %>
           </span>
           <% if user_signed_in? %>
           <span style="float: right; padding: 12px 20px 12px;">

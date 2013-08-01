@@ -1,6 +1,6 @@
 Qursync::Application.routes.draw do
 
-  get "documentation/getting_started"
+  get "documentation/getting_started" => 'documentation#getting_started', as: 'getting_started'
 
   get "documentation/api_reference/(:endpoint)" => 'documentation#api_reference', as: 'api_reference'
 

@@ -34,12 +34,12 @@
   <i>Developer for <%= time_ago_in_words(@user.developer_since) %></i>
   <h3>Documentation</h3>
   <ul>
-    <li><%= link_to "Getting Started", documentation_getting_started_path %></li>
-    <li><%= link_to "API Reference", documentation_api_reference_path %></li>
+    <li><%= link_to "Getting Started", getting_started_path %></li>
+    <li><%= link_to "API Reference", api_reference_path %></li>
     <li>Check out <%= link_to "Sinatra Demo Client", @demo_url %> for an interactive API demo</li>
   </ul>
 <% else %>
   <hr/>
   Are you a developer? Do you want to create your own apps to access user profiles on their behalf? Contact us with more details about your app ideas via email: <a href="mailto:support@quran.com">profiles@quran.com</a>.
-  Meanwhile, you can check the <%= link_to "Getting Started Guide", documentation_getting_started_path %> and the <%= link_to "API Reference", documentation_api_reference_path %>.
+  Meanwhile, you can check the <%= link_to "Getting Started Guide", getting_started_path %> and the <%= link_to "API Reference", api_reference_path %>.
 <% end %>

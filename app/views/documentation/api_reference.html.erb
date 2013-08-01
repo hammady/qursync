@@ -29,7 +29,8 @@
 <pre>
   GET <%= api_base %>/<%= @endpoint_name%>
 </pre>
-  <%= render partial: 'response_table', locals: {codes: [200, 401], collection: true, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= render partial: 'response_table', locals: {codes: [200, 401], collection: true, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+    json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
 
@@ -40,7 +41,8 @@
 <pre>
   GET <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
 </pre>
-  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+  json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
 
@@ -53,7 +55,8 @@
 <% if @endpoint_params %>
 
   key1=val1&key2=val2&...<% end %></pre>
-  <%= render partial: 'response_table', locals: {codes: [201, 401, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= render partial: 'response_table', locals: {codes: [201, 401, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+  json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
 
@@ -66,7 +69,8 @@
 <% if @endpoint_params %>
 
   key1=val1&key2=val2&...<% end %></pre>
-  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+  json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
 
@@ -83,13 +87,13 @@
         <td>Description</td>
       </tr>
       <% @endpoint_params.each do |param, options| %>
-        <tr>
-          <td><%= param %></td>
-          <td><%= options["required"] || "No" %></td>
-          <td><%= options["can_update"] || "Yes" %></td>
-          <td><%= options["values"] || "Any" %></td>
-          <td><%= options["description"] %></td>
-        </tr>
+        <% if param.start_with?("_") %>
+          <% options.each do |sub_param, sub_param_options| %>
+            <%= render partial: 'param_row', locals: {param: sub_param, options: sub_param_options} %>  
+          <% end %>
+        <% else %>
+          <%= render partial: 'param_row', locals: {param: param, options: options} %>
+        <% end %>
       <% end %>
     </table>
   <% end %>
@@ -103,7 +107,8 @@
 <pre>
   DELETE <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
 </pre>
-  <%= render partial: 'response_table', locals: {codes: [206, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= render partial: 'response_table', locals: {codes: [206, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+    json_hints: ''} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
 

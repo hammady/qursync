@@ -10,9 +10,9 @@
     <% elsif code == 422 %>
       <%= render partial: 'response_body_invalid', locals: {endpoint_friendly_s: endpoint_friendly_s} %>
     <% elsif code == 200 && collection %>
-      <%= render partial: 'resources_json', locals: {endpoint_friendly_s: endpoint_friendly_s.upcase, params: endpoint_params} %>
+      <%= render partial: 'resources_json', locals: {endpoint_friendly_s: endpoint_friendly_s.upcase, params: endpoint_params, json_hints: json_hints} %>
     <% elsif [200, 201].include? code %>
-      <%= render partial: 'resource_json', locals: {params: endpoint_params} %>
+      <%= render partial: 'resource_json', locals: {params: endpoint_params, json_hints: json_hints} %>
     <% end %>
   </td>
 </tr>

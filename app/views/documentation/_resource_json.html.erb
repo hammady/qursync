@@ -2,9 +2,16 @@
   id: &lt;id&gt;,
 <% if params %>
 <% params.each do |param, options| %>
+  <% if param.start_with?("_") %>
+  <%= param.sub "_", "" %>: {<% first = true %><% options.each do |sub_param, sub_param_options| %><%= "," unless first %>
+    <%= sub_param %>: &lt;<%=sub_param_options["values"] || "Any"%>&gt;<% first=false %><% end %>
+  }
+  <% else %>
   <%= param %>: &lt;<%=options["values"] || "Any"%>&gt;,
+  <% end %>
 <% end %>
 <%end%>  
   created_at: &lt;date_time&gt;,
   updated_at: &lt;date_time&gt;
 }</pre>
+<%= json_hints %>

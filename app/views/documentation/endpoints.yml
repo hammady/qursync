@@ -1,21 +1,23 @@
 bookmarks:
   name:
     description: Any unique name you give to your bookmark
-  page: &page
-    required: Yes, if no chapter/verse given
-    values: number from 1 to 604
-    description: The page pointer to this resource
-  chapter: &chapter
-    required: Yes, if no page given
-    values: number from 1 to 114
-    description: The chapter pointer to this resource, works with verse
-  verse: &verse
-    required: Yes, if no page given
-    values: number from 1 to 287
-    description: The verse pointer to this resource, works with chapter
+  _pointer: &pointer
+    page:
+      required: Yes, if no chapter/verse given
+      values: number from 1 to 604
+      description: The page pointer to this resource
+    chapter:
+      required: Yes, if no page given
+      values: number from 1 to 114
+      description: The chapter pointer to this resource, works with verse
+    verse:
+      required: Yes, if no page given
+      values: number from 1 to 287
+      description: The verse pointer to this resource, works with chapter
   is_default:
     values: 1 or 0
     description: Only one bookmark can be default, setting it to 1 resets all other bookmarks to 0. Can be used as last page bookmark for example that is automatically set and read by your app with no user intervention
+  json_hints: &json_hints "The pointer object only has either page or chapter/verse combination"
 tag_names:
   name:
     required: 'Yes'
@@ -26,19 +28,13 @@ tags:
     can_update: 'No'
     values: number
     description: The TagName id this tag belongs to
-  page:
-    <<: *page
-  chapter:
-    <<: *chapter
-  verse:
-    <<: *verse
+  _pointer:
+    <<: *pointer
+  json_hints: *json_hints
 notes:
   text:
     required: 'Yes'
     description: The text of the note
-  page:
-    <<: *page
-  chapter:
-    <<: *chapter
-  verse:
-    <<: *verse
+  _pointer:
+    <<: *pointer
+  json_hints: *json_hints

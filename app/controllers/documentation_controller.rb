@@ -8,6 +8,7 @@ class DocumentationController < ApplicationController
     endpoint = params[:endpoint]
     if endpoint
       @endpoint_name = endpoint
+      @json_hints = endpoints[endpoint].delete "json_hints"
       @endpoint_params = endpoints[endpoint]
       unless @endpoint_params
         flash[:error] = "Endpoint #{endpoint} not found in the API reference"

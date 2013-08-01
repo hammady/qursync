@@ -6,6 +6,6 @@
     <td>Body</td>
   </tr>
   <% codes.each do |code| %>
-    <%= render partial: "response_row", locals: {code: code, endpoint_name: endpoint_name, endpoint_params: endpoint_params, collection: collection} %>
+    <%= render partial: "response_row", locals: {code: code, endpoint_name: endpoint_name, endpoint_params: endpoint_params, collection: collection, json_hints: json_hints} %>
   <% end %>
 </table>

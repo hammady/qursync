@@ -1,0 +1,18 @@
+<% endpoint_friendly_s = endpoint_name.camelize.singularize %>
+<% meanings = {200 => 'OK', 201 => 'Created', 206 => 'Deleted', 401 => 'Unauthorized', 404 => 'Not found', 403 => 'Forbidden', 422 => 'Invalid'} %>
+
+<tr>
+  <td><%= code %></td>
+  <td><%= meanings[code] %></td>
+  <td>
+    <% if [206, 401, 403, 404].include? code %>
+      -
+    <% elsif code == 422 %>
+      <%= render partial: 'response_body_invalid', locals: {endpoint_friendly_s: endpoint_friendly_s} %>
+    <% elsif code == 200 && collection %>
+      <%= render partial: 'resources_json', locals: {endpoint_friendly_s: endpoint_friendly_s.upcase, params: endpoint_params} %>
+    <% elsif [200, 201].include? code %>
+      <%= render partial: 'resource_json', locals: {params: endpoint_params} %>
+    <% end %>
+  </td>
+</tr>

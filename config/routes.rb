@@ -1,4 +1,9 @@
 Qursync::Application.routes.draw do
+
+  get "documentation/getting_started"
+
+  get "documentation/api_reference/(:endpoint)" => 'documentation#api_reference', as: 'api_reference'
+
   use_doorkeeper do
     # custom controller
     controllers :applications => 'oauth/applications'

@@ -11,7 +11,6 @@ class ProfileSummaryController < ApplicationController
     @user = current_user
     @app_gallery = Doorkeeper::RichApplication.where(:listed => true)
     @app_gallery = @app_gallery.where("id not in (?)", @user.granted_oauth_applications.map(&:id)) if @user.granted_oauth_applications.count > 0
-    @presentation_url = "http://www.slideshare.net/briandavidcampbell/is-that-a-token-in-your-phone-in-your-pocket-or-are-you-just-glad-to-see-me-oauth-20-and-mobile-devices"
     @demo_url = Doorkeeper::RichApplication.where("name like '%Sinatra%Demo%'").first.website
   end
 

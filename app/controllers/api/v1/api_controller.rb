@@ -52,7 +52,7 @@ class Api::V1::ApiController < ApplicationController
       unless params[:page].blank?
         resource_instance.pointer = PagePointer.new page: params[:page]
       else
-        if !params[:page].blank? && !params[:chapter].blank?
+        unless params[:chapter].blank? || params[:verse].blank?
           resource_instance.pointer = VersePointer.new chapter: params[:chapter], verse: params[:verse]
         end      
       end

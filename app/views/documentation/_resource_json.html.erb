@@ -1,0 +1,10 @@
+<pre>{
+  id: &lt;id&gt;,
+<% if params %>
+<% params.each do |param, options| %>
+  <%= param %>: &lt;<%=options["values"] || "Any"%>&gt;,
+<% end %>
+<%end%>  
+  created_at: &lt;date_time&gt;,
+  updated_at: &lt;date_time&gt;
+}</pre>

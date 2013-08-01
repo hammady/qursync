@@ -1,0 +1,188 @@
+<h1>Getting Started</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+  <li><%= link_to "Registring your application", "#toc_registring" %></li>
+  <li><%= link_to "Authenticating users", "#toc_authenticating" %></li>
+  <li>
+    <%= link_to "Accessing user data", "#toc_accessing" %>
+    <ol>
+      <li><%= link_to "Reading user data", "#toc_reading" %></li>
+      <li><%= link_to "Updating user data", "#toc_updating" %></li>
+    </ol>
+  </li>
+</ol>
+
+<h2 id="toc_registring">1. Registring your application</h2>
+Once you are granted a developer account, you will see a new Developer section in your home page:
+<blockquote>
+  <h3>Developer</h3>
+  <p>You have developed <%= apps_link %></p>
+  <i>Developer for 1 day</i>
+</blockquote>
+Click on <%= apps_link %> to start creating applications. Each application has 4 mandatory fields:
+<ol>
+  <li><b>Name:</b> the name that will appear to users when authenticating your app to access their data</li>
+  <li><b>Redirect uri (callback):</b> a URI that is served by your application (web page or mobile handler) which is part of the <%= oauth_link %> authorization protocol, see next section for details</li>
+  <li><b>Website:</b> your website that will appear to users when authenticating your app to access their data</li>
+  <li><b>Description:</b> describe your application to us and to users in brief so that they can pick it up from the app gallery on their home pages (if it is listed)</li>
+</ol>
+<p>There is an additional boolean field: <b>Listed</b>. Check if you want your app to be listed to end users on their home pages</p>
+
+<h2 id="toc_authenticating">2. Authenticating users</h2>
+<p>
+  There are lots of client libraries that can already handle the <%= oauth_link %> protocol. However, following are detailed steps needed in case you will not use any OAuth library. 
+</p>
+<ol>
+  <li>After creating your application, you will get an authorization link that you have to make your end users follow to start the authentication process. This link contains 2 tokens: application id (client token) and secret as well as the redirect uri.</li>
+  <li>The user will be redirected to <%= link_to api_base(true, true), api_base(false, true) %> so that he signs in if he is not already signed in</li>
+  <li>The user will be asked to authorize your application to read his data. If he does, he will be redirected to the callback you have specified earlier</li>
+  <li>If your application is web based, the callback should be handled by your server. If it is a mobile app, you should register a handler so that the mobile OS calls your application upon being redirected to this callback scheme. A detailed explanation of callback handling with example Android/iOS code can be found <%= link_to "here", @presentation_url %>.</li>
+  <li>
+    The callback receives a parameter named 'code' in the query string. It should immediately issue a POST request to <%=api_base(false, true)%>/oauth/token with the following parameters in the POST body:
+    <ul>
+      <li><b>grant_type:</b> the string "authorization_code" without quotes</li>
+      <li><b>code:</b> the code received in the callback query string</li>
+      <li><b>client_id:</b> your application id (client token)</li>
+      <li><b>client_secret:</b> your application secret</li>
+      <li><b>redirect_uri:</b> the same redirect uri (callback) you used before</li>
+    </ul>
+  </li>
+  <li>If everything goes fine, the previous POST request should return a JSON response having 'access_token' field. This access token is the end user secret that you will use later on to issue requests against the API on his behalf. Store it privately in your app and keep in mind that each user will have a different access token. This token never expires but can be revoked manually by the user from his profile home page.</li>
+</ol>
+<h2 id="toc_accessing">3. Accessing user data</h2>
+<p>
+  Currently there are <%= @endpoints_count %> endpoints that you can consume on behalf of the end users. Each endpoint follows a <%= link_to "RESTful", "http://en.wikipedia.org/wiki/Representational_state_transfer" %> interface. You may be familiar with this, so you only need to know the specifics like response formats and parameter names. When issuing any request to the API you should include the access token acquired from the previous step as a query string parameter:
+<pre>
+  <%=api_base%>/bookmarks?access_token=access_token_here
+</pre>
+  Or by inserting an HTTP header:
+<pre>
+  GET /api/v1/bookmarks HTTP/1.1
+  Host: <%=api_base(true, true)%>
+  Authorization: Bearer access_token_here
+</pre>
+  <p>For simplicity, we will omit this access_token parameter in subsequent sections.</p>
+  <p>All responses are either coded in JSON or are empty, depending on the HTTP status code. You should check for this status code immediately after receiving the response and before you check for the response body, as it could be empty. Generally speaking, status codes in the range 200~299 represent success. Codes in the range 400~499 represent user error (not found, unauthorized, forbidden, ...). If you receive a code in the range 500~599 then there is an internal error in the service meaning something went wrong, hopefully this won't happen. Try repeating your request in a while and if it persists please contact us.</p>
+  <p> A special note is that whenever you receive the code 401 (unauthorized) it means the user didn't allow your app to access his data, or has revoked the access, or the access token has expired for some reason. In such case, just acquire a new access token as explained earlier. However, the code 403 (forbidden) means that your permissions don't allow you to fulfil this request and no further authentication can overcome this situation. An example is when you try to delete a bookmark that belongs to another user. 
+</p>
+<h3 id="toc_reading">3.1 Reading user data</h3>
+<p>
+  You can list all user bookmarks by issuing the following request on the bookmarks enpoint:
+<pre>
+  GET <%=api_base%>/bookmarks
+</pre>
+  On success, it returns a JSON array representing all user bookmarks, for example:
+<pre>
+  [
+    {
+      "id"=>5,
+      "name"=>"b1", 
+      "is_default"=>false, 
+      "created_at"=>"2013-07-26T14:32:22Z",
+      "updated_at"=>"2013-07-26T14:32:22Z", 
+      "pointer"=>{
+        "page"=>10
+      }
+    },
+    {
+      "id"=>8,
+      "name"=>"newname",
+      "is_default"=>false,
+      "created_at"=>"2013-07-26T14:42:43Z",
+      "updated_at"=>"2013-07-31T14:00:59Z",
+      "pointer"=>{
+        "page"=>10
+      }
+    },
+    {
+      "id"=>10, 
+      "name"=>"second", 
+      "is_default"=>true, 
+      "created_at"=>"2013-07-31T14:00:59Z", 
+      "updated_at"=>"2013-07-31T14:04:50Z", 
+      "pointer"=>{
+        "chapter"=>3,
+        "verse"=>10
+      }
+    }
+  ]
+</pre>
+  To get only 1 bookmark details (for example having id=8), issue the following:
+<pre>
+  GET <%=api_base%>/bookmarks/8
+</pre>
+On success, you get status code 200 (OK) and response body:
+<pre>
+  {
+    "id"=>8,
+    "name"=>"newname",
+    "is_default"=>false,
+    "created_at"=>"2013-07-26T14:42:43Z",
+    "updated_at"=>"2013-07-31T14:00:59Z",
+    "pointer"=>{
+      "page"=>10
+    }
+  }
+</pre>
+</p>
+
+<h3 id="toc_updating">3.2 Updating user data</h3>
+<p>
+  You can create, update or delete any of the user resources for any of the endpoints. You do this by using POST, PUT or DELETE HTTP methods, respectively. For update and delete you put the resource id in the url. For create and update, you supply the resource attributes in the POST/PUT request body. Following are examples for each case.
+</p>
+<h4>Creating a bookmark</h4>
+You issue:
+<pre>
+  POST <%=api_base%>/bookmarks
+
+  name=bookmark1&page=10
+</pre>
+On success, you get status code 201 (Created) and response body:
+<pre>
+  {
+    "id"=>1,
+    "name"=>"bookmark1",
+    "is_default"=>false,
+    "created_at"=>"2013-07-31T14:27:51Z",
+    "updated_at"=>"2013-07-31T14:27:51Z",
+    "pointer"=>{
+      "page"=>10
+    }
+  }
+</pre>
+
+<h4>Updating a bookmark</h4>
+To update a bookmark having id=1, you issue:
+<pre>
+  PUT <%=api_base%>/bookmarks/1
+
+  name=bookmark1_updated&chapter=10&verse=5
+</pre>
+On success, you get status code 200 (OK) and response body:
+<pre>
+  {
+    "id"=>1,
+    "name"=>"bookmark1_updated",
+    "is_default"=>false,
+    "created_at"=>"2013-07-31T14:27:51Z",
+    "updated_at"=>"2013-07-31T14:27:51Z",
+    "pointer"=>{
+      "chapter"=>10,
+      "verse"=>5
+    }
+  }
+</pre>
+
+<h4>Deleting a bookmark</h4>
+To delete a bookmark having id=1, you issue:
+<pre>
+  DELETE <%=api_base%>/bookmarks/1
+</pre>
+On success, you get status code 204 (Deleted) and no response body.
+
+<p>
+  For a complete refrence on all endpoints, check the <%= link_to "API Reference", api_reference_path %>.
+</p>
+
+<hr/>

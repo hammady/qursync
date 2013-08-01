@@ -3,7 +3,8 @@ class Bookmark < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :bookmarks
   belongs_to :pointer, polymorphic: true, :dependent => :destroy
-  
+
+  validates_uniqueness_of :name, :scope => :user_id, allow_blank: true
   validates :pointer, presence: true
   validates_associated :pointer
 

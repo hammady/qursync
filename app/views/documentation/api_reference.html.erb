@@ -1,0 +1,114 @@
+<% if @endpoints %>
+
+  <h1>API Reference: Endpoints</h1>
+  <ol>
+    <% @endpoints.each do |endpoint| %>
+    <li><%= link_to endpoint.camelize, api_reference_path(endpoint) %></li>
+    <% end %>
+  </ol>
+
+<% else %>
+
+  <% endpoint_friendly = @endpoint_name.camelize %>
+  <% endpoint_friendly_s = endpoint_friendly.singularize %>
+
+  <h1>API Reference: <%= endpoint_friendly %> Endpoint</h1>
+  <ol>
+    <li><%= link_to "Listing #{endpoint_friendly}", "#toc_listing" %></li>
+    <li><%= link_to "Showing #{endpoint_friendly}", "#toc_showing" %></li>
+    <li><%= link_to "Creating #{endpoint_friendly}", "#toc_creating" %></li>
+    <li><%= link_to "Updating #{endpoint_friendly}", "#toc_updating" %></li>
+    <li><%= link_to "Parameters for Create and Update", "#toc_params" %></li>
+    <li><%= link_to "Deleting #{endpoint_friendly}", "#toc_deleting" %></li>
+  </ol>
+
+<!-- LISTING -->
+
+  <h2 id="toc_listing">Listing <%= endpoint_friendly %></h2>
+  <h3>Request</h3>
+<pre>
+  GET <%= api_base %>/<%= @endpoint_name%>
+</pre>
+  <%= render partial: 'response_table', locals: {codes: [200, 401], collection: true, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+<!-- SHOWING -->
+
+  <h2 id="toc_showing">Showing a <%= endpoint_friendly_s %> having id=&lt;id&gt;</h2>
+  <h3>Request</h3>
+<pre>
+  GET <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
+</pre>
+  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+<!-- CREATING -->
+
+  <h2 id="toc_creating">Creating a <%= endpoint_friendly_s %></h2>
+  <h3>Request</h3>
+<pre>
+  POST <%= api_base %>/<%= @endpoint_name%>
+<% if @endpoint_params %>
+
+  key1=val1&key2=val2&...<% end %></pre>
+  <%= render partial: 'response_table', locals: {codes: [201, 401, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+<!-- UPDATING -->
+
+  <h2 id="toc_updating">Updating a <%= endpoint_friendly_s %> having id=&lt;id&gt;</h2>
+  <h3>Request</h3>
+<pre>
+  PUT <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
+<% if @endpoint_params %>
+
+  key1=val1&key2=val2&...<% end %></pre>
+  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+<!-- PARAMETERS TABLE -->
+
+  <% if @endpoint_params %>
+    <h2 id="toc_params">Parameters for <%= endpoint_friendly_s %> Create and Update</h2>
+    <table>
+      <tr>
+        <td>Key</td>
+        <td>Required?</td>
+        <td>Can update?</td>
+        <td>Allowed values</td>
+        <td>Description</td>
+      </tr>
+      <% @endpoint_params.each do |param, options| %>
+        <tr>
+          <td><%= param %></td>
+          <td><%= options["required"] || "No" %></td>
+          <td><%= options["can_update"] || "Yes" %></td>
+          <td><%= options["values"] || "Any" %></td>
+          <td><%= options["description"] %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+<!-- DELETING -->
+
+  <h2 id="toc_deleting">Deleting a <%= endpoint_friendly_s %> having id=&lt;id&gt;</h2>
+  <h3>Request</h3>
+<pre>
+  DELETE <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
+</pre>
+  <%= render partial: 'response_table', locals: {codes: [206, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params} %>
+  <%= link_to "Back to top", "#" %>
+  <hr/>
+
+  <%= link_to "Back to API Reference", api_reference_path %>
+  
+  <hr/>
+
+<% end %>

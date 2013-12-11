@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730005131) do
+ActiveRecord::Schema.define(:version => 20131211184356) do
 
   create_table "bookmarks", :force => true do |t|
     t.string   "name"
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20130730005131) do
     t.string   "website"
     t.text     "description"
     t.boolean  "listed",       :default => false
+    t.boolean  "trusted"
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"

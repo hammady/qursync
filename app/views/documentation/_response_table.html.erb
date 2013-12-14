@@ -1,9 +1,9 @@
 <h4>Response</h4>
 <table>
   <tr>
-    <td>Status Code</td>
-    <td>Meaning</td>
-    <td>Body</td>
+    <th>Status Code</th>
+    <th>Meaning</th>
+    <th>Body</th>
   </tr>
   <% codes.each do |code| %>
     <%= render partial: "response_row", locals: {code: code, endpoint_name: endpoint_name, endpoint_params: endpoint_params, collection: collection, json_hints: json_hints} %>

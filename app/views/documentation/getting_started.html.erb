@@ -36,7 +36,7 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
 <ol>
   <li>After creating your application, you will get an authorization link that you have to make your end users follow to start the authentication process. This link contains 2 tokens: application id (client token) and secret as well as the redirect uri.</li>
   <li>The user will be redirected to <%= link_to api_base(true, true), api_base(false, true) %> so that he signs in if he is not already signed in</li>
-  <li>The user will be asked to authorize your application to read his data. If he does, he will be redirected to the callback you have specified earlier</li>
+  <li>The user will be asked to authorize your application to access his data (not applicable for trusted applications). If he does, he will be redirected to the callback you have specified earlier</li>
   <li>If your application is web based, the callback should be handled by your server. If it is a mobile app, you should register a handler so that the mobile OS calls your application upon being redirected to this callback scheme. A detailed explanation of callback handling with example Android/iOS code can be found <%= link_to "here", @presentation_url %>.</li>
   <li>
     The callback receives a parameter named 'code' in the query string. It should immediately issue a POST request to <%=api_base(false, true)%>/oauth/token with the following parameters in the POST body:
@@ -83,6 +83,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
       "updated_at"=>"2013-07-26T14:32:22Z", 
       "pointer"=>{
         "page"=>10
+      },
+      "etag"=>{
+        "1234567890abcde1234567890abcde1234567890"
       }
     },
     {
@@ -93,6 +96,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
       "updated_at"=>"2013-07-31T14:00:59Z",
       "pointer"=>{
         "page"=>10
+      },
+      "etag"=>{
+        "01234567890abcde1234567890abcde123456789"
       }
     },
     {
@@ -104,6 +110,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
       "pointer"=>{
         "chapter"=>3,
         "verse"=>10
+      },
+      "etag"=>{
+        "a1234567890abcde1234567890abcde123456789"
       }
     }
   ]
@@ -122,9 +131,13 @@ On success, you get status code 200 (OK) and response body:
     "updated_at"=>"2013-07-31T14:00:59Z",
     "pointer"=>{
       "page"=>10
+    },
+    "etag"=>{
+      "b1234567890abcde1234567890abcde123456789"
     }
   }
 </pre>
+It should be noted that each resource has an "etag" representing its state. You need this etag later when you update this resource.
 </p>
 
 <h3 id="toc_updating">3.2 Updating user data</h3>
@@ -148,7 +161,10 @@ On success, you get status code 201 (Created) and response body:
     "updated_at"=>"2013-07-31T14:27:51Z",
     "pointer"=>{
       "page"=>10
-    }
+    },
+    "etag"=>{
+      "c1234567890abcde1234567890abcde123456789"
+    }    
   }
 </pre>
 
@@ -157,8 +173,10 @@ To update a bookmark having id=1, you issue:
 <pre>
   PUT <%=api_base%>/bookmarks/1
 
-  name=bookmark1_updated&chapter=10&verse=5
+  name=bookmark1_updated&chapter=10&verse=5&etag=VALID_ETAG
 </pre>
+Note that you should supply a valid etag, typically acquired from the server on a previous request.
+The server uses this etag to ensure that you are updating the resource consistently and that it was not updated by another client.
 On success, you get status code 200 (OK) and response body:
 <pre>
   {
@@ -170,9 +188,14 @@ On success, you get status code 200 (OK) and response body:
     "pointer"=>{
       "chapter"=>10,
       "verse"=>5
+    },
+    "etag"=>{
+      "d1234567890abcde1234567890abcde123456789"
     }
   }
 </pre>
+Note that you will get a new etag that you have to use for subsequent requests.
+If there is a conflict where another client updated the bookmark after you got the etag (causing the etag to change), the server will respond by status 409 (Conflict).
 
 <h4>Deleting a bookmark</h4>
 To delete a bookmark having id=1, you issue:

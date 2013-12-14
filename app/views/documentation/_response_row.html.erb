@@ -1,11 +1,11 @@
 <% endpoint_friendly_s = endpoint_name.camelize.singularize %>
-<% meanings = {200 => 'OK', 201 => 'Created', 206 => 'Deleted', 401 => 'Unauthorized', 404 => 'Not found', 403 => 'Forbidden', 422 => 'Invalid'} %>
+<% meanings = {200 => 'OK', 201 => 'Created', 206 => 'Deleted', 401 => 'Unauthorized', 404 => 'Not found', 403 => 'Forbidden', 409 => 'Conflict', 422 => 'Invalid'} %>
 
 <tr>
   <td><%= code %></td>
   <td><%= meanings[code] %></td>
   <td>
-    <% if [206, 401, 403, 404].include? code %>
+    <% if [206, 401, 403, 404, 409].include? code %>
       -
     <% elsif code == 422 %>
       <%= render partial: 'response_body_invalid', locals: {endpoint_friendly_s: endpoint_friendly_s} %>

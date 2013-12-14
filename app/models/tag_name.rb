@@ -1,4 +1,6 @@
 class TagName < ActiveRecord::Base
+  include SecureTaggable
+
   attr_accessible :name
   belongs_to :user, inverse_of: :tag_names
   has_many :tags
@@ -10,7 +12,7 @@ class TagName < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(:only => [:id, :name, :created_at, :updated_at], :methods => :tags)
+    super(:only => [:id, :name, :created_at, :updated_at], :methods => [:tags, :etag])
   end
 
 end

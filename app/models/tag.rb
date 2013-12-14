@@ -1,4 +1,6 @@
 class Tag < ActiveRecord::Base
+  include SecureTaggable
+
   belongs_to :tag_name, inverse_of: :tags
   belongs_to :pointer, polymorphic: true, :dependent => :destroy
   
@@ -6,7 +8,7 @@ class Tag < ActiveRecord::Base
   validates_associated :pointer
 
   def as_json(options = {})
-    super(:only => [:id, :created_at, :updated_at, :tag_name_id], :methods => :pointer)
+    super(:only => [:id, :created_at, :updated_at, :tag_name_id], :methods => [:pointer, :etag])
   end
 
 end

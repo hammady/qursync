@@ -38,6 +38,11 @@
     <input type="text" name="id" id="input_id" value=""/>
   </label>
 
+  <label class="input_etag">
+    etag:
+    <input type="text" name="etag" id="input_etag" value=""/>
+  </label>
+
   <% @inputs.each do |input| %>
   <div>
     <label class="<%= @readonly_inputs.include?(input) ? "readonly" : "inputs" %>">
@@ -71,23 +76,27 @@
     $("input[name='action']").change(function() {
       var checked = $("input[name='action']:checked").val()
       var input_id = $(".input_id")
+      var input_etag = $(".input_etag")
       var inputs = $(".inputs")
       var readonly_inputs = $(".readonly")
       var url = $("#modify_url")
       if (checked == 'update') {
         input_id.show()
+        input_etag.show()
         readonly_inputs.hide();
         inputs.show()
         url.html("PUT <%=@request_url%>/<%=@endpoint%>/")
       } 
       else if (checked == 'create') {
         input_id.hide()
+        input_etag.hide()
         readonly_inputs.show();
         inputs.show()
         url.html("POST <%=@request_url%>/<%=@endpoint%>")
       } 
       else if (checked == 'delete') {
         input_id.show()
+        input_etag.hide()
         readonly_inputs.hide();
         inputs.hide()
         url.html("DELETE <%=@request_url%>/<%=@endpoint%>/")

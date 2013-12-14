@@ -6,49 +6,39 @@ enable :sessions
 
 # manually create client application details on the provider side (table: oauth2_clients)
 
-def consumer_key
-  '51ae32d245f7b8fe2b3bee7ed54b05bb9968cd8c879ceced8421841dc9fb7d76'
-end
+CONSUMER_KEY = '51ae32d245f7b8fe2b3bee7ed54b05bb9968cd8c879ceced8421841dc9fb7d76'
+CONSUMER_SECRET = '5d2e8ccf0bd14aa13371752da84cd36f50e5be837b8dc5730248daf6059ba1b1' 
+REQUEST_URL = 'http://localhost:3000'
 
-def consumer_secret
-  '5d2e8ccf0bd14aa13371752da84cd36f50e5be837b8dc5730248daf6059ba1b1' 
-end
+HUMAN_CODES = {
 
-def request_url
-  'http://localhost:3000'
-end
+}
 
-def endpoints
-  %w(bookmarks tag_names tags notes)
-end
+ENDPOINTS = %w(bookmarks tag_names tags notes)
 
-def endpoint_params
-  {
-    :bookmarks => %w(name page chapter verse is_default),
-    :tag_names => %w(name),
-    :tags => %w(tag_name_id page chapter verse),
-    :notes => %w(text page chapter verse)
-  }
-end
+ENDPOINT_PARAMS = {
+  :bookmarks => %w(name page chapter verse is_default),
+  :tag_names => %w(name),
+  :tags => %w(tag_name_id page chapter verse),
+  :notes => %w(text page chapter verse)
+}
 
-def endpoint_params_readonly
-  {
-    :tags => %w(tag_name_id)
-  }
-end
+ENDPOINT_PARAMS_READONLY = {
+  :tags => %w(tag_name_id)
+}
 
-def endpoint_params_hints
-  {
-    :bookmarks => "either type a page number or a combination of chapter/verse, set is_default to 1 to mark it as the default bookmark (e.g. last page)",
-    :tag_names => "name is mandatory",
-    :tags => "get tag_name_id from tag_names endpoint, either type a page number or a combination of chapter/verse",
-    :notes => "write a long text here, either type a page number or a combination of chapter/verse"
-  }
-end
+ENDPOINT_PARAMS_HINTS = {
+  :bookmarks => "either type a page number or a combination of chapter/verse, set is_default to 1 to mark it as the default bookmark (e.g. last page)",
+  :tag_names => "name is mandatory",
+  :tags => "get tag_name_id from tag_names endpoint, either type a page number or a combination of chapter/verse",
+  :notes => "write a long text here, either type a page number or a combination of chapter/verse"
+}
+
+# begin sinatra handlers
 
 get '/' do
   if session[:access_token]
-    @endpoints = endpoints
+    @endpoints = ENDPOINTS
     erb :home
   else
     redirect '/auth'
@@ -56,39 +46,39 @@ get '/' do
 end
 
 get "/auth" do
-  redirect "#{request_url}/oauth/authorize?client_id=#{consumer_key}&redirect_uri=#{redirect_uri}&response_type=code"
+  redirect "#{REQUEST_URL}/oauth/authorize?client_id=#{CONSUMER_KEY}&redirect_uri=#{redirect_uri}&response_type=code"
 end
 
 get '/callback' do
   code = request["code"]
   if code
     @message = "Successfully authenticated with the server"
-    response = JSON.parse(Typhoeus.post("#{request_url}/oauth/token", body: {
+    response = JSON.parse(Typhoeus.post("#{REQUEST_URL}/oauth/token", body: {
       grant_type: "authorization_code",
       code: code,
-      client_id: consumer_key,
-      client_secret: consumer_secret,
+      client_id: CONSUMER_KEY,
+      client_secret: CONSUMER_SECRET,
       redirect_uri: redirect_uri
     }).body)
     session[:access_token] = response["access_token"]
   else
     @message = "Error authenticating with the server"
   end
-  @endpoints = !!code ? endpoints : [] 
+  @endpoints = !!code ? ENDPOINTS : [] 
   erb :home
 end
 
 get '/demo/:endpoint' do
   endpoint = params[:endpoint]
-  if endpoints.include?(endpoint)
-    url = "#{request_url}/api/v1/#{endpoint}?access_token=#{session[:access_token]}"
+  if ENDPOINTS.include?(endpoint)
+    url = "#{REQUEST_URL}/api/v1/#{endpoint}?access_token=#{session[:access_token]}"
     response = Typhoeus.get(url)
     code, @content = parse_response(response)
     @endpoint = endpoint
-    @inputs = endpoint_params[endpoint.to_sym]
-    @readonly_inputs = endpoint_params_readonly[endpoint.to_sym] || []
-    @request_url = "#{request_url}/api/v1"
-    @hint = endpoint_params_hints[endpoint.to_sym]
+    @inputs = ENDPOINT_PARAMS[endpoint.to_sym]
+    @readonly_inputs = ENDPOINT_PARAMS_READONLY[endpoint.to_sym] || []
+    @REQUEST_URL = "#{REQUEST_URL}/api/v1"
+    @hint = ENDPOINT_PARAMS_HINTS[endpoint.to_sym]
     erb :content
   else
     flash[:error] = "There is no endpoint called '#{endpoint}'"
@@ -115,16 +105,19 @@ post '/demo/modify' do
     method = :delete
     operation = "Deleting"
   end
-  url = "#{request_url}/api/v1/#{url}?access_token=#{session[:access_token]}" 
+  url = "#{REQUEST_URL}/api/v1/#{url}?access_token=#{session[:access_token]}" 
   phash = Hash[
-    endpoint_params[endpoint].zip endpoint_params[endpoint].map{|p| params[p]}
+    ENDPOINT_PARAMS[endpoint].zip ENDPOINT_PARAMS[endpoint].map{|p| params[p]}
   ]
+  phash[:etag] = params[:etag]
   request = Typhoeus::Request.new(url, method: method, params: phash)
   request.run
   parse_response(request.response, operation)
 
   redirect "/demo/#{endpoint}"
 end
+
+private
 
 def parse_response(response, flash_operation = nil)
   code = response.code
@@ -133,7 +126,7 @@ def parse_response(response, flash_operation = nil)
   if code == 401
     redirect '/auth'
   elsif flash_operation
-    flash[code.between?(200, 299) ? :notice : :error] = "#{flash_operation} (#{code}) - #{body == '' ? '[NO BODY]' : body}"
+    flash[code.between?(200, 299) ? :notice : :error] = "#{flash_operation} (#{code} #{response.status_message.strip}) - #{body == '' ? '[NO BODY]' : body}"
   end
   return code, body
 end

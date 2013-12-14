@@ -24,7 +24,11 @@ class Api::V1::ApiController < ApplicationController
 
   # PUT /endpoint/:id
   def update
-    save
+    unless conflict?
+      save
+    else
+      head status: :conflict
+    end
   end
 
   # DELETE /endpoint/:id
@@ -64,6 +68,10 @@ class Api::V1::ApiController < ApplicationController
     else
       render json: resource_instance.errors, status: :unprocessable_entity
     end
+  end
+
+  def conflict?
+    params[:etag] != resource_instance.etag
   end
 
   private

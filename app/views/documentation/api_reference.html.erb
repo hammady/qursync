@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag 'documentation' %>
+
 <% if @endpoints %>
 
   <h1>API Reference: Endpoints</h1>
@@ -68,8 +70,8 @@
   PUT <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
 <% if @endpoint_params %>
 
-  key1=val1&key2=val2&...<% end %></pre>
-  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+  key1=val1&key2=val2&...&etag=VALID_ETAG<% end %></pre>
+  <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 409, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
   json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
   <hr/>
@@ -80,13 +82,13 @@
     <h2 id="toc_params">Parameters for <%= endpoint_friendly_s %> Create and Update</h2>
     <table>
       <tr>
-        <td>Key</td>
-        <td>Required?</td>
-        <td>Can update?</td>
-        <td>Allowed values</td>
-        <td>Description</td>
+        <th>Key</th>
+        <th>Required?</th>
+        <th>Can update?</th>
+        <th>Allowed values</th>
+        <th>Description</th>
       </tr>
-      <% @endpoint_params.each do |param, options| %>
+      <% @endpoint_params.reject{|p| p=='json_hints'}.each do |param, options| %>
         <% if param.start_with?("_") %>
           <% options.each do |sub_param, sub_param_options| %>
             <%= render partial: 'param_row', locals: {param: sub_param, options: sub_param_options} %>  

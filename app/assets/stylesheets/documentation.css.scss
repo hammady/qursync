@@ -1,3 +1,13 @@
 // Place all the styles related to the documentation controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+table {
+  border: 1px solid gray;
+}
+
+table th {
+  background-color: silver;
+  font-weight: bold;
+  margin-top: 1px;
+}

@@ -1,8 +1,9 @@
 Qursync::Application.routes.draw do
 
+  get "documentation" => 'documentation#index', as: 'documentation'
   get "documentation/getting_started" => 'documentation#getting_started', as: 'getting_started'
-
   get "documentation/api_reference/(:endpoint)" => 'documentation#api_reference', as: 'api_reference'
+  get "documentation/client_interfaces/(:endpoint)" => 'documentation#client_interfaces', as: 'client_interfaces'
 
   use_doorkeeper do
     # custom controller
@@ -14,7 +15,6 @@ Qursync::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :bookmarks, defaults: {format: :json}
-      resources :tag_names, defaults: {format: :json}
       resources :tags, defaults: {format: :json}
       resources :notes, defaults: {format: :json}
     end

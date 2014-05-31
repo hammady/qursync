@@ -47,6 +47,7 @@ gem 'omniauth'
 #gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
+gem 'coderay'
 
 # testing
 group :development, :test do

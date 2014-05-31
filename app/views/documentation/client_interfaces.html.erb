@@ -1,0 +1,25 @@
+<h1>Client Interfaces</h1>
+
+<%= stylesheet_link_tag 'documentation' %>
+
+<% if @endpoints %>
+
+  <h2>Resources</h2>
+  <ol>
+    <% @endpoints.each do |endpoint| %>
+    <li><%= link_to endpoint.camelize, client_interfaces_path(endpoint) %></li>
+    <% end %>
+  </ol>
+
+<% else %>
+
+  <% endpoint_friendly = @endpoint_name.camelize %>
+  <% endpoint_friendly_s = endpoint_friendly.singularize %>
+
+  <h2><%= endpoint_friendly %> Resource</h2>
+  <%= @html.html_safe %>
+
+<% end %>
+
+  Back to <%= link_to "Documentation", documentation_path %>.
+

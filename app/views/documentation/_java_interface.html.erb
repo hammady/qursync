@@ -1,0 +1,31 @@
+<% klass = "QP#{resource.camelize}" %>
+
+// <%=klass%>.java
+package com.quran.profiles;
+
+public class <%= klass %> {
+  // READING OBJECTS FROM THE SERVER
+
+  // listing <%= resource.pluralize %>
+  public static List<<%=klass%>> list()
+    throws EQPUnauthorized, EQPForbidden;
+
+  // retrieving a <%= resource %>
+  public static <%=klass%> get(int id)
+    throws EQPNotFound, EQPUnauthorized, EQPForbidden;
+
+  // WRITING OBJECTS TO THE SERVER
+
+  // initialize
+  public <%= klass %>();
+  public <%= klass %>(int[] params);
+
+  // saving a <%= resource %> (will trigger either create or update)
+  public <%=klass%> save(int[] params)
+    throws EQPInvalid, EQPNotFound, EQPConflict, EQPUnauthorized, EQPForbidden;
+
+  // deleting a <%= resource %>
+  public <%=klass%> remove()
+    throws EQPNotFound, EQPUnauthorized, EQPForbidden;
+
+}

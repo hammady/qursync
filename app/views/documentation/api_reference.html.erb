@@ -1,20 +1,23 @@
 <%= stylesheet_link_tag 'documentation' %>
 
+<h1>REST API Reference</h1>
+
 <% if @endpoints %>
 
-  <h1>API Reference: Endpoints</h1>
+  <h2>Endpoints</h2>
   <ol>
     <% @endpoints.each do |endpoint| %>
     <li><%= link_to endpoint.camelize, api_reference_path(endpoint) %></li>
     <% end %>
   </ol>
+  Back to <%= link_to "Documentation", documentation_path %>.
 
 <% else %>
 
   <% endpoint_friendly = @endpoint_name.camelize %>
   <% endpoint_friendly_s = endpoint_friendly.singularize %>
 
-  <h1>API Reference: <%= endpoint_friendly %> Endpoint</h1>
+  <h2><%= endpoint_friendly %> Endpoint</h2>
   <ol>
     <li><%= link_to "Listing #{endpoint_friendly}", "#toc_listing" %></li>
     <li><%= link_to "Showing #{endpoint_friendly}", "#toc_showing" %></li>
@@ -109,7 +112,7 @@
 <pre>
   DELETE <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
 </pre>
-  <%= render partial: 'response_table', locals: {codes: [206, 401, 403, 404, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
+  <%= render partial: 'response_table', locals: {codes: [206, 401, 403, 404], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
     json_hints: ''} %>
   <%= link_to "Back to top", "#" %>
   <hr/>

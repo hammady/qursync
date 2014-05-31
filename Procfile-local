@@ -1,1 +1,2 @@
 web: rails server
+sinatra: ruby sinatra_client.rb

@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :tag do
-    tag_name ""
+    name "MyTag"
     user nil
     pointer nil
   end

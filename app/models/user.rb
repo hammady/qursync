@@ -12,8 +12,7 @@ class User < ActiveRecord::Base
   attr_accessible :provider, :uid, :name, :developer_since
 
   has_many :bookmarks, inverse_of: :user
-  has_many :tag_names, inverse_of: :user
-  has_many :tags, through: :tag_names
+  has_many :tags, inverse_of: :user
   has_many :notes, inverse_of: :user
 
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner

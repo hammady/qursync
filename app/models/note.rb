@@ -10,7 +10,8 @@ class Note < ActiveRecord::Base
   validates_associated :pointer
 
   def as_json(options = {})
-    super(:only => [:id, :text, :created_at, :updated_at], :methods => [:pointer, :etag])
+    super(:only => [:id, :text, :created_at, :updated_at],
+      :methods => [:pointer, :etag])
   end
 
 end

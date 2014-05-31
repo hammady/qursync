@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131211184356) do
+ActiveRecord::Schema.define(:version => 20140531112850) do
 
   create_table "bookmarks", :force => true do |t|
     t.string   "name"
@@ -114,23 +114,16 @@ ActiveRecord::Schema.define(:version => 20131211184356) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "tag_names", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "tags", :force => true do |t|
-    t.integer  "tag_name_id"
     t.integer  "pointer_id"
     t.string   "pointer_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.string   "name"
+    t.integer  "user_id"
   end
 
   add_index "tags", ["pointer_id"], :name => "index_tags_on_pointer_id"
-  add_index "tags", ["tag_name_id"], :name => "index_tags_on_tag_name_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false

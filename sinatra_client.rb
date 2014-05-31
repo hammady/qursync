@@ -14,23 +14,20 @@ HUMAN_CODES = {
 
 }
 
-ENDPOINTS = %w(bookmarks tag_names tags notes)
+ENDPOINTS = %w(bookmarks tags notes)
 
 ENDPOINT_PARAMS = {
   :bookmarks => %w(name page chapter verse is_default),
-  :tag_names => %w(name),
-  :tags => %w(tag_name_id page chapter verse),
+  :tags => %w(name page chapter verse),
   :notes => %w(text page chapter verse)
 }
 
 ENDPOINT_PARAMS_READONLY = {
-  :tags => %w(tag_name_id)
 }
 
 ENDPOINT_PARAMS_HINTS = {
   :bookmarks => "either type a page number or a combination of chapter/verse, set is_default to 1 to mark it as the default bookmark (e.g. last page)",
-  :tag_names => "name is mandatory",
-  :tags => "get tag_name_id from tag_names endpoint, either type a page number or a combination of chapter/verse",
+  :tags => "name is mandatory, either type a page number or a combination of chapter/verse",
   :notes => "write a long text here, either type a page number or a combination of chapter/verse"
 }
 

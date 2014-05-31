@@ -23,18 +23,10 @@ bookmarks:
     values: Valid etag
     description: 'The update request will return 409 (Conflict) if this is missing or is invalid, always use a valid etag from the most recent response on the same resource'
   json_hints: &json_hints "The pointer object only has either page or chapter/verse combination"
-tag_names:
+tags:
   name:
     required: 'Yes'
-    description: Any unique name you give to your tag name
-  etag:
-    <<: *etag
-tags:
-  tag_name_id:
-    required: 'Yes'
-    can_update: 'No'
-    values: Number
-    description: The TagName id this tag belongs to
+    description: Any unique name you give to your tag
   _pointer:
     <<: *pointer
   etag:

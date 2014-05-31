@@ -6,8 +6,7 @@ class Ability
 
     can :manage, Doorkeeper::RichApplication, :owner_id => user.id, :owner_type => 'User' if user.developer_since
     can :manage, Bookmark, :user_id => user.id
-    can :manage, TagName, :user_id => user.id
-    can :manage, Tag, :tag_name => {:user_id => user.id}
+    can :manage, Tag, :user_id => user.id
     can :manage, Note, :user_id => user.id
 
     # Define abilities for the passed in user here. For example:

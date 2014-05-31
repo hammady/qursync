@@ -17,7 +17,8 @@ class Bookmark < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(:only => [:id, :name, :is_default, :created_at, :updated_at], :methods => [:pointer, :etag])
+    super(:only => [:id, :name, :is_default, :created_at, :updated_at],
+      :methods => [:pointer, :etag])
   end
 
 end

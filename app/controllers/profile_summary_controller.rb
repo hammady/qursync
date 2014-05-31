@@ -4,7 +4,9 @@ class ProfileSummaryController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    endpoints = %w(bookmarks tag_names tags notes)
+    endpoints = YAML.load(File.read(File.expand_path(
+      '../../views/documentation/endpoints.yml', __FILE__)))
+      .keys
     @counts = Hash[endpoints.zip(endpoints.map do |endpoint|
       current_user.send(endpoint).count
     end)]

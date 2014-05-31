@@ -145,12 +145,19 @@ It should be noted that each resource has an "etag" representing its state. You 
   You can create, update or delete any of the user resources for any of the endpoints. You do this by using POST, PUT or DELETE HTTP methods, respectively. For update and delete you put the resource id in the url. For create and update, you supply the resource attributes in the POST/PUT request body. Following are examples for each case.
 </p>
 <h4>Creating a bookmark</h4>
-You issue:
+Using header Content-type: application/x-www-form-urlencoded:
 <pre>
   POST <%=api_base%>/bookmarks
 
   name=bookmark1&page=10
 </pre>
+Or using header Content-type: application/json
+<pre>
+  POST <%=api_base%>/bookmarks
+
+  {'name': 'bookmark1', 'pointer': {'page': 10}}
+</pre>
+
 On success, you get status code 201 (Created) and response body:
 <pre>
   {
@@ -169,12 +176,22 @@ On success, you get status code 201 (Created) and response body:
 </pre>
 
 <h4>Updating a bookmark</h4>
-To update a bookmark having id=1, you issue:
+To update a bookmark having id=1 using header Content-type: application/x-www-form-urlencoded:
 <pre>
   PUT <%=api_base%>/bookmarks/1
 
   name=bookmark1_updated&chapter=10&verse=5&etag=VALID_ETAG
 </pre>
+Or using header Content-type: application/json
+<pre>
+  PUT <%=api_base%>/bookmarks/1
+
+  {'name': 'bookmark1_updated', 'pointer': {'chapter': 3, 'verse': 4}, 'etag': 'VALID_ETAG'}
+</pre>
+The latter method is useful when you store the raw JSON object returned from
+the API server and you want to just modify it and return it back for updates.
+
+
 Note that you should supply a valid etag, typically acquired from the server on a previous request.
 The server uses this etag to ensure that you are updating the resource consistently and that it was not updated by another client.
 On success, you get status code 200 (OK) and response body:

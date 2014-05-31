@@ -52,6 +52,12 @@ class Api::V1::ApiController < ApplicationController
     
     if resource_instance.respond_to? "pointer"
       old_pointer = resource_instance.pointer
+      params_pointer = params[:pointer]
+      unless params_pointer.blank?
+        params[:page] = params_pointer[:page] unless params_pointer[:page].blank?
+        params[:chapter] = params_pointer[:chapter] unless params_pointer[:chapter].blank?
+        params[:verse] = params_pointer[:verse] unless params_pointer[:verse].blank?
+      end
       unless params[:page].blank?
         resource_instance.pointer = PagePointer.new page: params[:page]
       else

@@ -116,13 +116,6 @@ ActiveRecord::Schema.define(:version => 20140531124724) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "tag_names", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "name"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "tags", :force => true do |t|
     t.integer  "pointer_id"
     t.string   "pointer_type"
@@ -130,7 +123,6 @@ ActiveRecord::Schema.define(:version => 20140531124724) do
     t.datetime "updated_at",   :null => false
     t.string   "name"
     t.integer  "user_id"
-    t.integer  "tag_name_id"
     t.string   "color"
   end
 

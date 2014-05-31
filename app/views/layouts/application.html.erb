@@ -7,10 +7,10 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <section id="main" class="container">
+  <section id="main">
     <div class="topbar">
       <div class="fill">
-        <div class="container">
+        <div class="container-fluid">
           <span class="brand">
             <%= link_to "Quran.com Profiles", "/" %>
           </span>
@@ -23,15 +23,13 @@
       </div>
     </div>
     <div class="content">
-      <div class="row">
-        <% flash.each do |key, message| %>
-          <div class="span16">
-            <div class="alert-message <%= key %>" data-alert><a class="close" href="#">×</a><p><%= message %></p></div>
-          </div>
-        <% end %>
+      <% flash.each do |key, message| %>
+        <div class="span16">
+          <div class="alert-message <%= key %>" data-alert><a class="close" href="#">×</a><p><%= message %></p></div>
+        </div>
+      <% end %>
 
-        <%= yield %>
-      </div>
+      <%= yield %>
     </div>
   </section>
 

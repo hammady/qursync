@@ -21,9 +21,11 @@
 <%- if devise_mapping.omniauthable? %>
   <center>
   <%- resource_class.omniauth_providers.each do |provider| %>
+    <p>
     <%= link_to omniauth_authorize_path(resource_name, provider) do %>
       <%= image_tag "login-#{provider.to_s}.png" %>
     <% end %>
+    </p>
   <% end -%>
   </center>
 <% end -%>

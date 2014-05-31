@@ -17,9 +17,9 @@ HUMAN_CODES = {
 ENDPOINTS = %w(bookmarks tags notes)
 
 ENDPOINT_PARAMS = {
-  :bookmarks => %w(name page chapter verse is_default),
-  :tags => %w(name page chapter verse),
-  :notes => %w(text page chapter verse)
+  :bookmarks => %w(name page chapter verse is_default color),
+  :tags => %w(name page chapter verse color),
+  :notes => %w(text page chapter verse color)
 }
 
 ENDPOINT_PARAMS_READONLY = {

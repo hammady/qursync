@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140531112850) do
+ActiveRecord::Schema.define(:version => 20140531124724) do
 
   create_table "bookmarks", :force => true do |t|
     t.string   "name"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20140531112850) do
     t.boolean  "is_default",   :default => false
     t.integer  "pointer_id"
     t.string   "pointer_type"
+    t.string   "color"
   end
 
   create_table "notes", :force => true do |t|
@@ -30,6 +31,7 @@ ActiveRecord::Schema.define(:version => 20140531112850) do
     t.string   "pointer_type"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.string   "color"
   end
 
   add_index "notes", ["pointer_id"], :name => "index_notes_on_pointer_id"
@@ -121,6 +123,7 @@ ActiveRecord::Schema.define(:version => 20140531112850) do
     t.datetime "updated_at",   :null => false
     t.string   "name"
     t.integer  "user_id"
+    t.string   "color"
   end
 
   add_index "tags", ["pointer_id"], :name => "index_tags_on_pointer_id"

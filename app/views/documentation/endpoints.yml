@@ -17,6 +17,10 @@ bookmarks:
   is_default:
     values: 1 or 0
     description: Only one bookmark can be default, setting it to 1 resets all other bookmarks to 0. Can be used as last page bookmark for example that is automatically set and read by your app with no user intervention
+  color: &color
+    required: No
+    values: '#000000 to #FFFFFF'
+    description: The resource color to be shown to end users
   etag: &etag
     required: 'Yes in Update, No in Create'
     can_update: 'No'
@@ -29,6 +33,8 @@ tags:
     description: Any unique name you give to your tag
   _pointer:
     <<: *pointer
+  color:
+    <<: *color
   etag:
     <<: *etag
   json_hints: *json_hints
@@ -38,6 +44,8 @@ notes:
     description: The text of the note
   _pointer:
     <<: *pointer
+  color:
+    <<: *color
   etag:
     <<: *etag
   json_hints: *json_hints

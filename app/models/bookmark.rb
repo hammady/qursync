@@ -1,7 +1,7 @@
 class Bookmark < ActiveRecord::Base
   include SecureTaggable
 
-  attr_accessible :name, :is_default
+  attr_accessible :name, :is_default, :color
 
   belongs_to :user, inverse_of: :bookmarks
   belongs_to :pointer, polymorphic: true, :dependent => :destroy
@@ -10,6 +10,8 @@ class Bookmark < ActiveRecord::Base
   validates :pointer, presence: true
   validates_associated :pointer
 
+  validates_with ColorValidator
+
   after_save do |bookmark|
     if bookmark.is_default
       bookmark.user.bookmarks.update_all({is_default: false}, ["id != ?", bookmark.id])
@@ -17,7 +19,7 @@ class Bookmark < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(:only => [:id, :name, :is_default, :created_at, :updated_at],
+    super(:only => [:id, :name, :is_default, :color, :created_at, :updated_at],
       :methods => [:pointer, :etag])
   end
 

@@ -2,7 +2,7 @@ class VersePointer < ActiveRecord::Base
   attr_accessible :chapter, :verse
 
   has_many :bookmarks, as: :pointer
-  has_many :tags, as: :pointer
+  has_many :notes, as: :pointer
 
   validates :chapter, numericality: { 
     only_integer: true,

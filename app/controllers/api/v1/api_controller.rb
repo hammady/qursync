@@ -27,7 +27,7 @@ class Api::V1::ApiController < ApplicationController
     unless conflict?
       save
     else
-      head status: :conflict
+      render status: :conflict, json: resource_instance
     end
   end
 
@@ -47,11 +47,16 @@ class Api::V1::ApiController < ApplicationController
   end
 
   def save
-    set_attributes(resource_instance)
-    resource_instance.user = current_user if resource_instance.respond_to? "user"
+    # cache resource_instance call
+    instance = resource_instance
+
+    # set attributes in children
+    set_attributes(instance)
+    # attach to current user, to overcome user injection attacks
+    instance.user = current_user if instance.respond_to? "user"
     
-    if resource_instance.respond_to? "pointer"
-      old_pointer = resource_instance.pointer
+    if instance.respond_to? "pointer"
+      old_pointer = instance.pointer
       params_pointer = params[:pointer]
       unless params_pointer.blank?
         params[:page] = params_pointer[:page] unless params_pointer[:page].blank?
@@ -59,20 +64,20 @@ class Api::V1::ApiController < ApplicationController
         params[:verse] = params_pointer[:verse] unless params_pointer[:verse].blank?
       end
       unless params[:page].blank?
-        resource_instance.pointer = PagePointer.new page: params[:page]
+        instance.pointer = PagePointer.new page: params[:page]
       else
         unless params[:chapter].blank? || params[:verse].blank?
-          resource_instance.pointer = VersePointer.new chapter: params[:chapter], verse: params[:verse]
+          instance.pointer = VersePointer.new chapter: params[:chapter], verse: params[:verse]
         end      
       end
-      old_pointer.destroy if resource_instance.pointer != old_pointer && resource_instance.pointer.valid? && old_pointer
+      old_pointer.destroy if instance.pointer != old_pointer && instance.pointer.valid? && old_pointer
     end
 
-    success_status = resource_instance.new_record? ? :created : :ok
-    if resource_instance.save
-      render json: resource_instance, status: success_status
+    success_status = instance.new_record? ? :created : :ok
+    if instance.save
+      render json: instance, status: success_status
     else
-      render json: resource_instance.errors, status: :unprocessable_entity
+      render json: instance.errors, status: :unprocessable_entity
     end
   end
 

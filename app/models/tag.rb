@@ -15,14 +15,12 @@ class Tag < ActiveRecord::Base
 
   def as_json(options = {})
     super(:only => [:id, :name, :color, :created_at, :updated_at],
-      :methods => [:pointer, :etag],
-      :include => {
-        :bookmarks => {
-          :only => [:id, :name, :is_default, :color, :created_at, :updated_at],
-          :methods => [:pointer, :etag]
-        }
-      }      
+      :methods => [:pointer, :etag, :bookmark_ids]
     )
+  end
+
+  def bookmark_ids
+    self.bookmarks.map(&:id)
   end
 
 end

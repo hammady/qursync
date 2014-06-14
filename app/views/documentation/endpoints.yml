@@ -21,6 +21,20 @@ bookmarks:
     required: No
     values: '#000000 to #FFFFFF'
     description: The resource color to be shown to end users
+  tags:
+    values: Array of tag names to attach to this bookmark
+    description: Old tags will be reused and new tags will be created accordingly
+    input_only: true
+  override_tags:
+    values: true or false (default)
+    description: 'if true, attached old tags will be removed and the list of supplied tags will be attached instead. Otherwise, supplied tags will be appended to the bookmark'
+    input_only: true
+  tag_ids:
+    output_only: true
+    values: Array of tag ids attached to this bookmark
+  new_tags:
+    output_only: true
+    values: Array of tag objects for newly created tags (if any). Useful if you are attaching new tags by name
   etag: &etag
     required: 'Yes in Update, No in Create'
     can_update: 'No'
@@ -31,8 +45,6 @@ tags:
   name:
     required: 'Yes'
     description: Any unique name you give to your tag
-  _pointer:
-    <<: *pointer
   color:
     <<: *color
   etag:

@@ -12,6 +12,8 @@ class Bookmark < ActiveRecord::Base
   validates_associated :pointer
   validates_with ColorValidator
 
+  attr_accessor :new_tags
+
   after_save do |bookmark|
     if bookmark.is_default
       bookmark.user.bookmarks.update_all({is_default: false}, ["id != ?", bookmark.id])
@@ -28,14 +30,17 @@ class Bookmark < ActiveRecord::Base
       tag_names -= self.tags.pluck(:name)
     end
     # add tags
+    self.new_tags = []
     tag_names.each do |tag_name|
-      self.tags << Tag.where(name: tag_name, user_id: user.id).first_or_initialize
+      tag = Tag.where(name: tag_name, user_id: user.id).first_or_initialize
+      self.new_tags << tag if tag.new_record?
+      self.tags << tag
     end
   end
 
   def as_json(options = {})
     super(:only => [:id, :name, :is_default, :color, :created_at, :updated_at],
-      :methods => [:pointer, :etag, :tag_ids]
+      :methods => [:pointer, :etag, :tag_ids, :new_tags]
     )
   end
 

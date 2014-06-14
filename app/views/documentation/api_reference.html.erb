@@ -57,9 +57,14 @@
   <h3>Request</h3>
 <pre>
   POST <%= api_base %>/<%= @endpoint_name%>
-<% if @endpoint_params %>
+</pre>
 
-  key1=val1&key2=val2&...<% end %></pre>
+<% if @endpoint_params %>
+  <h3>Body</h3>
+  <pre>
+  key1=val1&key2=val2&...<% end %></pre>Or
+  <pre>
+  {key1: val1, key2: val2, ...}</pre>
   <%= render partial: 'response_table', locals: {codes: [201, 401, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
   json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
@@ -71,9 +76,14 @@
   <h3>Request</h3>
 <pre>
   PUT <%= api_base %>/<%= @endpoint_name%>/&lt;id&gt;
-<% if @endpoint_params %>
+</pre>
 
-  key1=val1&key2=val2&...&etag=VALID_ETAG<% end %></pre>
+<% if @endpoint_params %>
+  <h3>Body</h3>
+  <pre>
+  key1=val1&key2=val2&...&etag=VALID_ETAG<% end %></pre>Or
+  <pre>
+  {key1: val1, key2: val2, etag: 'VALID_ETAG', ...}</pre>
   <%= render partial: 'response_table', locals: {codes: [200, 401, 403, 404, 409, 422], collection: false, endpoint_name: @endpoint_name, endpoint_params: @endpoint_params,
   json_hints: @json_hints} %>
   <%= link_to "Back to top", "#" %>
@@ -91,7 +101,7 @@
         <th>Allowed values</th>
         <th>Description</th>
       </tr>
-      <% @endpoint_params.reject{|p| p=='json_hints'}.each do |param, options| %>
+      <% @endpoint_params.reject{|p, o| p=='json_hints' || o['output_only']}.each do |param, options| %>
         <% if param.start_with?("_") %>
           <% options.each do |sub_param, sub_param_options| %>
             <%= render partial: 'param_row', locals: {param: sub_param, options: sub_param_options} %>  

@@ -84,9 +84,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
       "pointer"=>{
         "page"=>10
       },
-      "etag"=>{
-        "1234567890abcde1234567890abcde1234567890"
-      }
+      "tag_ids": [10, 15],
+      "new_tags": null,
+      "etag"=> "1234567890abcde1234567890abcde1234567890"
     },
     {
       "id"=>8,
@@ -97,9 +97,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
       "pointer"=>{
         "page"=>10
       },
-      "etag"=>{
-        "01234567890abcde1234567890abcde123456789"
-      }
+      "tag_ids": [10, 32],
+      "new_tags": null,
+      "etag"=> "01234567890abcde1234567890abcde123456789"
     },
     {
       "id"=>10, 
@@ -111,9 +111,9 @@ Click on <%= apps_link %> to start creating applications. Each application has 4
         "chapter"=>3,
         "verse"=>10
       },
-      "etag"=>{
-        "a1234567890abcde1234567890abcde123456789"
-      }
+      "tag_ids": [],
+      "new_tags": null,
+      "etag"=> "01234567890abcde1234567890abcde123456789"
     }
   ]
 </pre>
@@ -132,9 +132,9 @@ On success, you get status code 200 (OK) and response body:
     "pointer"=>{
       "page"=>10
     },
-    "etag"=>{
-      "b1234567890abcde1234567890abcde123456789"
-    }
+    "tag_ids": [10, 32],
+    "new_tags": null,
+    "etag"=> "01234567890abcde1234567890abcde123456789"
   }
 </pre>
 It should be noted that each resource has an "etag" representing its state. You need this etag later when you update this resource.
@@ -169,9 +169,9 @@ On success, you get status code 201 (Created) and response body:
     "pointer"=>{
       "page"=>10
     },
-    "etag"=>{
-      "c1234567890abcde1234567890abcde123456789"
-    }    
+    "tag_ids": [],
+    "new_tags": [],
+    "etag"=> "01234567890abcde1234567890abcde123456789"
   }
 </pre>
 
@@ -180,13 +180,13 @@ To update a bookmark having id=1 using header Content-type: application/x-www-fo
 <pre>
   PUT <%=api_base%>/bookmarks/1
 
-  name=bookmark1_updated&chapter=10&verse=5&etag=VALID_ETAG
+  name=bookmark1_updated&chapter=10&verse=5&tags[0]=mytag1&tags[1]=mytag2&etag=VALID_ETAG
 </pre>
 Or using header Content-type: application/json
 <pre>
   PUT <%=api_base%>/bookmarks/1
 
-  {'name': 'bookmark1_updated', 'pointer': {'chapter': 3, 'verse': 4}, 'etag': 'VALID_ETAG'}
+  {'name': 'bookmark1_updated', 'pointer': {'chapter': 3, 'verse': 4}, tags: ['mytag1', 'mytag2'], 'etag': 'VALID_ETAG'}
 </pre>
 The latter method is useful when you store the raw JSON object returned from
 the API server and you want to just modify it and return it back for updates.
@@ -206,13 +206,31 @@ On success, you get status code 200 (OK) and response body:
       "chapter"=>10,
       "verse"=>5
     },
-    "etag"=>{
-      "d1234567890abcde1234567890abcde123456789"
-    }
+    "tag_ids": [41, 42],
+    "new_tags": [
+      {
+        "color": null,
+        "created_at": "2014-06-14T07:51:15Z",
+        "id": 42,
+        "name": "mytag2",
+        "updated_at": "2014-06-14T07:51:15Z",
+        "etag": "2ce01e9d5118593800fbf96657c0b5d5adedaf11",
+        "bookmark_ids":
+        [
+            1
+        ]
+      }
+    ],
+    "etag"=> "01234567890abcde1234567890abcde123456789"
   }
 </pre>
 Note that you will get a new etag that you have to use for subsequent requests.
 If there is a conflict where another client updated the bookmark after you got the etag (causing the etag to change), the server will respond by status 409 (Conflict).
+
+If you have attached tags to the bookmark when creating/updating it, those tags will be looked up by name. If found, they will be
+reused and thier ids will be attached to the bookmark. Otherwise, new tag objects will be created and attached to the bookmark.
+The tag_ids array will show all tags by id that are attached to the bookmark. However, new_tags will only show tags that
+have just been created.
 
 <h4>Deleting a bookmark</h4>
 To delete a bookmark having id=1, you issue:

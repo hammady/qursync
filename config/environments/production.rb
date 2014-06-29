@@ -47,6 +47,7 @@ Qursync::Application.configure do
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( doorkeeper/application.css doorkeeper/application.js documentation.css)
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
@@ -66,8 +67,9 @@ Qursync::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # TODO SET
-  config.action_mailer.default_url_options = { :host => 'qursync.herokuapp.com' }
+  config.action_mailer.default_url_options = { :host => 'profiles.quran.com' }
 
   # heroku
   config.assets.initialize_on_precompile = false
+
 end

@@ -4,11 +4,17 @@ require 'typhoeus'
 require 'sinatra/flash'
 enable :sessions
 
-# manually create client application details on the provider side (table: oauth2_clients)
+# create client application details on the provider side
 
-CONSUMER_KEY = '51ae32d245f7b8fe2b3bee7ed54b05bb9968cd8c879ceced8421841dc9fb7d76'
-CONSUMER_SECRET = '5d2e8ccf0bd14aa13371752da84cd36f50e5be837b8dc5730248daf6059ba1b1' 
-REQUEST_URL = 'http://localhost:3000'
+# DEVELOPMENT KEYS
+# CONSUMER_KEY = '51ae32d245f7b8fe2b3bee7ed54b05bb9968cd8c879ceced8421841dc9fb7d76'
+# CONSUMER_SECRET = '5d2e8ccf0bd14aa13371752da84cd36f50e5be837b8dc5730248daf6059ba1b1' 
+# REQUEST_URL = 'http://localhost:3000'
+
+# PRODUCTION KEYS
+CONSUMER_KEY = 'd8ca4822d53eb02ee41f36b0cf5b3ffe1476993be3525546d974a3a7baaf960c'
+CONSUMER_SECRET = 'aeac6f29050936631a56dcbd122876c97c8900972ee11ba9734ea566d35b58e5'
+REQUEST_URL = 'http://profiles.quran.com'
 
 HUMAN_CODES = {
 

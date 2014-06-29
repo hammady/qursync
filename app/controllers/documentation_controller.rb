@@ -1,4 +1,8 @@
 class DocumentationController < ApplicationController
+  def ping
+    render text: "OK"
+  end
+  
   def getting_started
     load_endpoints
     @presentation_url = "http://www.slideshare.net/briandavidcampbell/is-that-a-token-in-your-phone-in-your-pocket-or-are-you-just-glad-to-see-me-oauth-20-and-mobile-devices"

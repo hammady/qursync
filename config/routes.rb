@@ -4,6 +4,7 @@ Qursync::Application.routes.draw do
   get "documentation/getting_started" => 'documentation#getting_started', as: 'getting_started'
   get "documentation/api_reference/(:endpoint)" => 'documentation#api_reference', as: 'api_reference'
   get "documentation/client_interfaces/(:endpoint)" => 'documentation#client_interfaces', as: 'client_interfaces'
+  get "ping" => 'documentation#ping'
 
   use_doorkeeper do
     # custom controller

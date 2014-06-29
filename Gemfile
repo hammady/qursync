@@ -49,6 +49,7 @@ gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
 gem 'coderay'
+gem 'newrelic_rpm'
 
 # testing
 group :development, :test do
@@ -58,3 +59,4 @@ group :development, :test do
   gem "database_cleaner"  # for disabling transactions for separate thread js drivers
   gem "poltergeist" # for headless javascript testing that does not require any X server or system libraries, only PhantoJS
 end
+
